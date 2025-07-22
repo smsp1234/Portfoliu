@@ -1,0 +1,240 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raducanu Alexandru - Portofoliu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Raducanu Alexandru</h1>
+    <p>Student UTCB - Automatică și Informatică Aplicată</p>
+  </header>
+
+
+<section id="proiect-cpp">
+  <h3>Sistem Bibliotecă - C++</h3>
+  <pre><code>
+// Structura pentru o carte
+struct Book {
+    string title;
+    string author;
+    int year;
+    int id;
+};
+
+vector<Book> library;
+
+// Functie pentru adaugarea de carti in biblioteca
+void addBook(const string& title, const string& author, int year) {
+    Book newBook;
+    newBook.title = title;
+    newBook.author = author;
+    newBook.year = year;
+    newBook.id = library.size() + 1;
+
+    library.push_back(newBook);
+    cout << "Carte adaugata cu succes!\n";
+}
+
+// Functie pentru citirea cartilor dintr-un fisier si adaugarea acestora in biblioteca
+void readBooksFromFile(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Eroare la deschiderea fisierului " << filename << "!\n";
+        return;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string title, author, yearStr;
+        getline(ss, title, ';');
+        getline(ss, author, ';');
+        getline(ss, yearStr, ';');
+
+        int year = stoi(yearStr);
+
+        addBook(title, author, year); // Adaugarea in vectorul de carti
+    }
+
+    file.close();
+    cout << "Cartile din fisierul " << filename << " au fost adaugate in biblioteca.\n";
+}
+
+// Functie pentru salvarea bibliotecii in fisier
+void saveLibraryToFile(const string& filename) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        for (const auto& book : library) {
+            file << book.title << ";" << book.author << ";" << book.year << ";" << book.id << "\n";
+        }
+        file.close();
+        cout << "Biblioteca a fost salvata in fisierul " << filename << ".\n";
+    } else {
+        cout << "Eroare la deschiderea fisierului " << filename << "!\n";
+    }
+}
+
+// Functie pentru stergerea bibliotecii din fisier
+void deleteLibraryFromFile(const string& filename) {
+    ofstream file(filename);
+    if (file.is_open()) {
+        file.close();
+        cout << "Biblioteca a fost stearsa din fisierul " << filename << ".\n";
+    } else {
+        cout << "Eroare la deschiderea fisierului " << filename << "!\n";
+    }
+}
+
+// Functie pentru afisarea cartilor care corespund unei cautari
+void searchBooks(const string& keyword, int option) {
+    int found = 0;
+
+    for (const auto& book : library) {
+        if ((option == 1 && book.title.find(keyword) != string::npos) ||
+            (option == 2 && book.author.find(keyword) != string::npos) ||
+            (option == 3 && book.year == stoi(keyword))) {
+            cout << "Titlu: " << book.title << ", Autor: " << book.author << ", An: " << book.year << ", ID: " << book.id << endl;
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        cout << "Nicio carte gasita conform cautarii!\n";
+    }
+}
+
+// Functie pentru stergerea unei carti din biblioteca
+void deleteBook(int id) {
+    auto it = library.begin();
+
+    while (it != library.end()) {
+        if (it->id == id) {
+            cout << "Cartea \"" << it->title << "\" a fost stearsa din biblioteca.\n";
+            it = library.erase(it);
+            return;
+        } else {
+            ++it;
+        }
+    }
+
+    cout << "Carte cu ID-ul dat nu a fost gasita!\n";
+}
+
+int main() {
+    char choice;
+    string keyword;
+    int option, year, id;
+    string filename = "biblioteca.txt";
+
+    readBooksFromFile(filename); // Citirea cărților din fișier la începutul programului
+
+    do {
+        cout << "\nAlegeti o optiune:\n";
+        cout << "1. Adaugare carte\n";
+        cout << "2. Cautare carte\n";
+        cout << "3. Stergere carte\n";
+        cout << "4. Salvare biblioteca in fisier\n";
+        cout << "5. Stergere biblioteca din fisier\n";
+        cout << "6. Iesire\n";
+
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Elimina newline-ul din buffer.
+
+        switch (choice) {
+            case '1':
+                {
+                    string titleAuthorInput;
+                    cout << "Introduceti titlul, autorul si anul publicarii (format: Titlu Autor An): ";
+                    getline(cin, titleAuthorInput);
+                    size_t spacePos = titleAuthorInput.find_last_of(" ");
+                    if (spacePos != string::npos) {
+                        string title = titleAuthorInput.substr(0, spacePos);
+                        string author = titleAuthorInput.substr(spacePos + 1);
+                        cin >> year;
+                        addBook(title, author, year);
+                    } else {
+                        cout << "Format invalid pentru titlu si autor!\n";
+                    }
+                }
+                break;
+            case '2':
+                cout << "Cautare dupa:\n";
+                cout << "1. Titlu\n";
+                cout << "2. Autor\n";
+                cout << "3. Anul publicarii\n";
+                cin >> option;
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Elimina newline-ul din buffer.
+                cout << "Introduceti cuvantul cheie: ";
+                getline(cin, keyword);
+                searchBooks(keyword, option);
+                break;
+            case '3':
+                cout << "Introduceti ID-ul cartii pe care doriti sa o stergeti: ";
+                cin >> id;
+                deleteBook(id);
+                break;
+            case '4':
+                saveLibraryToFile(filename);
+                break;
+            case '5':
+                deleteLibraryFromFile(filename);
+                break;
+            case '6':
+                cout << "Programul se inchide...\n";
+                break;
+            default:
+                cout << "Optiune invalida!\n";
+        }
+    } while (choice != '6');
+
+    return 0;
+}
+  </code></pre>
+</section>
+
+
+<footer>
+    <p>&copy; 2025 Raducanu Alexandru</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raducanu Alexandru - Portofoliu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Raducanu Alexandru</h1>
+    <p>Student UTCB - Automatică și Informatică Aplicată</p>
+  </header>
+
+<section id="proiect-cpp">
+ <h3>Joc Python 2D</h3>
+<pre><code>
+
+import pygame
+import math
+import sys
+import heapq
+
+# Setăm direcțiile de mișcare (stânga, dreapta, sus, jos)
+MOVES = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # stânga, dreapta, sus, jos
+
+# Initializare Pygame
+pygame.init()
+
+# Configurare ecran
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Wolfenstein-Style Game")
+
+# Culori
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)  # Culoare roșie
+DARK_RED = (139, 0, 0)  # Roșu închis pentru pereți
+GREY = (169, 169, 169)  # Gri pentru pereți cu dungi
+BROWN = (139, 69, 19)   # Maro pentru parchet
+BLUE = (135, 206, 250)  # Albastru pentru cer
+DARK_BROWN = (101, 67, 33)  # Maro închis pentru parchet
+LIGHT_GREY = (211, 211, 211)  # Gri deschis pentru nori
+GREEN = (0, 255, 0)  # Culoare verde pentru bara de stamina
+
+# Setări joc
+current_level = 1  # Nivelul curent
+player_x = 100  # Poziția inițială a jucătorului
+player_y = 100
+player_angle = 0
+
+tile_size = 50
+FOV = math.pi / 4  # Reducerea FOV-ului pentru a îmbunătăți viziunea asupra pereților
+NUM_RAYS = 120
+MAX_DEPTH = 800
+DELTA_ANGLE = FOV / NUM_RAYS
+MOVE_SPEED = 0.8
+ROTATE_SPEED = 0.03
+BULLET_DAMAGE = 25
+PLAYER_SPEED = 0.8  # Viteza de mișcare a jucătorului (poți ajusta această valoare)
+
+
+
+# Harta (folosind 1 pentru pereți și 0 pentru spații libere)
+# Niveluri
+LEVELS = [
+    # Nivelul 1
+    {
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+            [1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+            [1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1],
+            [1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+            [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ],
+        "enemies": [
+            {"x": 200, "y": 200, "health": 100},
+            {"x": 300, "y": 400, "health": 100},
+        ],
+    },
+    # Nivelul 2
+    {
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+            [1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+            [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1],
+            [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+            [1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ],
+        "enemies": [
+            {"x": 150, "y": 150, "health": 100},
+            {"x": 400, "y": 350, "health": 100},
+            {"x": 600, "y": 250, "health": 100},
+        ],
+    },
+    # Nivelul 3
+    {
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+            [1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1],
+            [1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ],
+        "enemies": [
+            {"x": 100, "y": 100, "health": 100},
+            {"x": 400, "y": 400, "health": 100},
+            {"x": 500, "y": 500, "health": 100},
+        ],
+    },
+    # Nivelul 4 - Boss
+    {
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ],
+        "enemies": [
+            {"x": 250, "y": 250, "health": 400},  # Boss-ul
+        ],
+    },
+]
+
+# Inițializare variabile globale
+current_level = 0
+MAP = LEVELS[current_level]["map"]
+enemies = LEVELS[current_level]["enemies"]
+
+# Jucător
+player_x = 150
+player_y = 150
+player_angle = 0
+health = 100
+stamina = 100
+MAX_STAMINA = 100
+stamina_regen_rate = 1  # Stamina se regenerează pe secundă
+stamina_decrease_rate = 5  # Stamina scade atunci când sprintăm
+
+# Inamici
+enemies = [
+    {"x": 300, "y": 300, "health": 100},
+    {"x": 500, "y": 400, "health": 100}
+]
+# Verificăm dacă inamicii sunt plasați corect pe hartă
+for enemy in enemies:
+    map_x = int(enemy["x"] / tile_size)
+    map_y = int(enemy["y"] / tile_size)
+    if MAP[map_y][map_x] != 0:
+        print(f"Inamicul de la {enemy['x']}, {enemy['y']} este într-un perete!")
+
+
+bullets = []  # Lista pentru glonțele active
+BULLET_SPEED = 5  # Viteza glonțului
+BULLET_DAMAGE = 25  # Daunele provocate de un glonț
+
+
+# Fonturi și text
+font = pygame.font.Font(None, 36)
+
+def move_player():
+    global player_x, player_y, player_angle
+
+    keys = pygame.key.get_pressed()  # Obține starea tastelor
+    new_x, new_y = player_x, player_y
+
+    # Mișcare înainte și înapoi
+    if keys[pygame.K_w]:  # Tasta W - înainte
+        new_x += PLAYER_SPEED * math.cos(player_angle)
+        new_y += PLAYER_SPEED * math.sin(player_angle)
+    if keys[pygame.K_s]:  # Tasta S - înapoi
+        new_x -= PLAYER_SPEED * math.cos(player_angle)
+        new_y -= PLAYER_SPEED * math.sin(player_angle)
+
+    # Rotație stânga și dreapta
+    if keys[pygame.K_a]:  # Tasta A - rotește la stânga
+        player_angle -= ROTATE_SPEED
+    if keys[pygame.K_d]:  # Tasta D - rotește la dreapta
+        player_angle += ROTATE_SPEED
+
+    # Verifică coliziunea pentru mișcare
+    map_x = int(new_x / tile_size)
+    map_y = int(new_y / tile_size)
+    if MAP[map_y][map_x] == 0:  # Dacă poziția nouă nu este într-un perete
+        player_x, player_y = new_x, new_y
+
+def display_level_complete():
+    """Afișează un mesaj când nivelul este complet."""
+    screen.fill(BLACK)
+    font = pygame.font.Font(None, 74)
+    text = font.render(f"Nivel {current_level + 1} complet!", True, WHITE)
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+    pygame.display.flip()
+    pygame.time.delay(2000)  # Așteaptă 2 secunde
+
+
+def load_next_level():
+    global current_level, MAP, enemies
+
+    current_level += 1
+
+    if current_level >= len(LEVELS):
+        print("Felicitări! Ai terminat jocul!")
+        pygame.quit()
+        sys.exit()
+
+    # Setăm MAP și enemies pentru noul nivel
+    MAP = LEVELS[current_level]["map"]
+    enemies = LEVELS[current_level]["enemies"]
+
+    if MAP is None or enemies is None:
+        print(f"Eroare la încărcarea nivelului {current_level + 1}: MAP sau enemies sunt None!")
+        pygame.quit()
+        sys.exit()
+
+    print(f"Nivelul {current_level + 1} încărcat!")
+    # Resetăm poziția jucătorului într-o zonă liberă
+    player_x, player_y = 100, 100  # Poziția implicită
+    map_x, map_y = int(player_x / tile_size), int(player_y / tile_size)
+
+    if MAP[map_y][map_x] != 0:  # Dacă poziția implicită nu este liberă, caută alta
+        found = False
+        for y in range(len(MAP)):
+            for x in range(len(MAP[0])):
+                if MAP[y][x] == 0:  # Spațiu liber
+                    player_x = x * tile_size + tile_size // 2
+                    player_y = y * tile_size + tile_size // 2
+                    found = True
+                    break
+            if found:
+                break
+
+    player_angle = 0  # Resetăm unghiul jucătorului
+    print(f"Nivelul {current_level + 1} încărcat!")
+
+
+def check_collision(new_x, new_y):
+    """Verificăm coliziunile cu pereții."""
+    map_x = int(new_x / tile_size)
+    map_y = int(new_y / tile_size)
+
+    if 0 <= map_x < len(MAP[0]) and 0 <= map_y < len(MAP):  # Verificăm limitele hărții
+        return MAP[map_y][map_x] == 0
+    return False
+
+
+def draw_enemies():
+    """Desenează inamicii vizibili."""
+    for enemy in enemies:
+        dx = enemy["x"] - player_x
+        dy = enemy["y"] - player_y
+        distance = math.sqrt(dx**2 + dy**2)
+        angle_to_enemy = math.atan2(dy, dx)
+        relative_angle = (angle_to_enemy - player_angle + math.pi) % (2 * math.pi) - math.pi
+
+        if -FOV / 2 < relative_angle < FOV / 2 and distance > 0.5:  # Inamic în câmpul vizual
+            screen_x = WIDTH // 2 + int(math.tan(relative_angle) * WIDTH // 2)
+            size = int(500 / (distance + 0.1))
+            screen_y = HEIGHT // 2 - size // 2
+
+            pygame.draw.rect(screen, RED, (screen_x - size // 2, screen_y, size, size))
+
+            # Desenăm sănătatea inamicului
+            health_bar_width = size
+            health_bar_height = 5
+            pygame.draw.rect(screen, (0, 255, 0), (screen_x - size // 2, screen_y - 10, health_bar_width, health_bar_height))
+            pygame.draw.rect(screen, (255, 0, 0), (screen_x - size // 2 + int(health_bar_width * (enemy['health'] / 100)), screen_y - 10, int(health_bar_width * (1 - enemy['health'] / 100)), health_bar_height))
+
+
+def draw_floor_and_ceiling():
+    # Desenează cerul
+    pygame.draw.rect(screen, BLUE, (0, 0, WIDTH, HEIGHT // 2))
+    
+    # Desenează podeaua
+    for y in range(HEIGHT // 2, HEIGHT, tile_size):
+        for x in range(0, WIDTH, tile_size):
+            pygame.draw.rect(screen, BROWN, (x, y, tile_size, tile_size))
+            # Dungi pentru efectul de parchet
+            for i in range(x, x + tile_size, 10):
+                pygame.draw.line(screen, BLACK, (i, y), (i, y + tile_size), 1)
+
+def draw_walls():
+    for ray in range(NUM_RAYS):
+        ray_angle = player_angle - FOV / 2 + ray * DELTA_ANGLE
+        for depth in range(1, MAX_DEPTH):
+            # Calculăm coordonatele țintă pe hartă
+            target_x = player_x + depth * math.cos(ray_angle)
+            target_y = player_y + depth * math.sin(ray_angle)
+            map_x = int(target_x / tile_size)
+            map_y = int(target_y / tile_size)
+
+            # Asigură-te că razele nu ies din harta jocului
+            if map_x < 0 or map_x >= len(MAP[0]) or map_y < 0 or map_y >= len(MAP):
+                break
+
+            # Dacă întâlnim un perete
+            if MAP[map_y][map_x] == 1:
+                wall_height = HEIGHT / (depth * math.cos(ray_angle - player_angle))  # Calculăm înălțimea peretelui
+                color = DARK_RED
+                wall_x = ray * (WIDTH // NUM_RAYS)  # Calculăm poziția X a peretelui
+                wall_y = HEIGHT // 2 - wall_height // 2  # Calculăm poziția Y a peretelui
+                wall_width = WIDTH // NUM_RAYS  # Lățimea fiecărui "ray"
+                wall_height = int(wall_height)  # Conversia la întreg
+
+                # Desenăm peretele
+                pygame.draw.rect(screen, color, (wall_x, wall_y, wall_width, wall_height))
+
+                # Adaugă linii orizontale (pentru efect de textură)
+                for y in range(0, wall_height, 10):  # Linii orizontale la fiecare 10 pixeli
+                    pygame.draw.line(
+                        screen, BLACK, 
+                        (wall_x, wall_y + y), 
+                        (wall_x + wall_width, wall_y + y), 
+                        1
+                    )
+
+                # Adaugă linii verticale (pentru efect de textură)
+                for x in range(0, wall_width, 10):  # Linii verticale la fiecare 10 pixeli
+                    pygame.draw.line(
+                        screen, BLACK, 
+                        (wall_x + x, wall_y), 
+                        (wall_x + x, wall_y + wall_height), 
+                        1
+                    )
+
+                break  # Găsit un perete, oprește verificarea pentru acest ray
+
+def draw_crosshair():
+    center_x = WIDTH // 2
+    center_y = HEIGHT // 2
+    crosshair_size = 10  # Dimensiunea crosshair-ului
+
+    # Linii orizontale și verticale pentru crosshair
+    pygame.draw.line(screen, WHITE, (center_x - crosshair_size, center_y), (center_x + crosshair_size, center_y), 2)
+    pygame.draw.line(screen, WHITE, (center_x, center_y - crosshair_size), (center_x, center_y + crosshair_size), 2)
+
+def draw_hud():
+    # Afișează bara de sănătate
+    pygame.draw.rect(screen, GREY, (10, 10, 200, 20))  # Fundalul barei
+    pygame.draw.rect(screen, GREEN, (10, 10, health * 2, 20))  # Bara propriu-zisă
+
+    # Afișează textul cu sănătatea
+    health_text = font.render(f"Health: {health}", True, WHITE)
+    screen.blit(health_text, (10, 40))
+
+    # Dacă stamina este folosită, o poți afișa și pe ea
+    pygame.draw.rect(screen, GREY, (10, 70, 200, 20))  # Fundalul barei
+    pygame.draw.rect(screen, GREEN, (10, 70, stamina * 2, 20))  # Bara propriu-zisă
+    stamina_text = font.render(f"Stamina: {stamina}", True, WHITE)
+    screen.blit(stamina_text, (10, 100))
+
+
+def draw_minimap():
+    """Desenează minimap-ul."""
+    minimap_scale = 5
+    minimap_width = len(MAP[0]) * minimap_scale
+    minimap_height = len(MAP) * minimap_scale
+    minimap_surface = pygame.Surface((minimap_width, minimap_height))
+
+    for y, row in enumerate(MAP):
+        for x, cell in enumerate(row):
+            color = DARK_RED if cell == 1 else GREY
+            pygame.draw.rect(minimap_surface, color, (x * minimap_scale, y * minimap_scale, minimap_scale, minimap_scale))
+
+    # Jucătorul
+    player_map_x = int(player_x / tile_size * minimap_scale)
+    player_map_y = int(player_y / tile_size * minimap_scale)
+    pygame.draw.circle(minimap_surface, WHITE, (player_map_x, player_map_y), 3)
+
+    # Direcția jucătorului
+    line_end_x = player_map_x + int(10 * math.cos(player_angle))
+    line_end_y = player_map_y + int(10 * math.sin(player_angle))
+    pygame.draw.line(minimap_surface, WHITE, (player_map_x, player_map_y), (line_end_x, line_end_y), 2)
+
+    # Inamicii
+    for enemy in enemies:
+        enemy_map_x = int(enemy["x"] / tile_size * minimap_scale)
+        enemy_map_y = int(enemy["y"] / tile_size * minimap_scale)
+        pygame.draw.circle(minimap_surface, RED, (enemy_map_x, enemy_map_y), 3)
+
+    # Afișează minimap-ul
+    screen.blit(minimap_surface, (WIDTH - minimap_width - 10, 10))
+
+
+# Inițializare harta și inamici pentru primul nivel
+MAP = LEVELS[current_level]["map"]
+enemies = LEVELS[current_level]["enemies"]
+
+# Bucla principală
+clock = pygame.time.Clock()
+running = True
+
+while running:
+    # Evenimente
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            # Atacăm inamicii
+            for enemy in enemies[:]:
+                dx = enemy["x"] - player_x
+                dy = enemy["y"] - player_y
+                distance = math.sqrt(dx**2 + dy**2)
+                angle_to_enemy = math.atan2(dy, dx)
+                relative_angle = angle_to_enemy - player_angle
+                relative_angle = (relative_angle + math.pi) % (2 * math.pi) - math.pi
+
+                if -FOV / 2 < relative_angle < FOV / 2 and distance < 200:
+                    print(f"Inamic lovit la ({enemy['x']}, {enemy['y']})!")
+                    enemy["health"] -= BULLET_DAMAGE
+                    if enemy["health"] <= 0:
+                        print(f"Inamicul de la ({enemy['x']}, {enemy['y']}) a fost eliminat!")
+                        enemies.remove(enemy)
+                    break
+
+    # Trecerea la următorul nivel
+    if not enemies:
+        print("Toți inamicii au fost eliminați! Trecem la următorul nivel...")
+        load_next_level()
+
+    # Mișcarea jucătorului
+    move_player()
+
+    # Curățăm ecranul
+    screen.fill(BLACK)
+
+    # Desenăm elementele 3D
+    draw_floor_and_ceiling()
+    draw_walls()
+    draw_enemies()
+    draw_crosshair()
+    draw_hud()
+    draw_minimap()
+
+    # Actualizăm ecranul
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
+</code></pre>
+</section>
+<footer>
+    <p>&copy; 2025 Raducanu Alexandru</p>
+  </footer>
+</body>
+</html>
