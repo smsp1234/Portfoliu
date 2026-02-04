@@ -11,32 +11,47 @@
       padding: 0;
       background: #f5f5f5;
       color: #333;
+      line-height: 1.5;
     }
     header {
       background: #2c3e50;
       color: white;
-      padding: 2rem;
+      padding: 2.2rem 1.2rem;
       text-align: center;
     }
     main {
-      padding: 2rem;
+      padding: 2rem 1.2rem;
       max-width: 900px;
       margin: 0 auto;
     }
-    section {
-      margin-bottom: 2rem;
-    }
+    section { margin-bottom: 2rem; }
+
     h2 {
       color: #2c3e50;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
     }
+
+    /* “Card” pentru fiecare proiect */
+    .project {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin: 0.9rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .project h3 {
+      margin: 0 0 0.4rem 0;
+      color: #2c3e50;
+    }
+    .project p { margin: 0.2rem 0; }
+
     a {
       color: #2980b9;
       text-decoration: none;
+      font-weight: 600;
     }
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
+
     footer {
       background: #2c3e50;
       color: white;
@@ -55,37 +70,47 @@
     <section id="proiecte">
       <h2>Proiecte</h2>
 
-      <h3>Sistem de bibliotecă (C++)</h3>
-      <p>Aplicație de tip consolă pentru gestionarea cărților. <br/>
-      <strong>Tehnologii:</strong> C++, STL<br/>
-      <a href="biblioteca.html">Vezi codul sursă</a></p>
+      <div class="project">
+        <h3>Sistem de bibliotecă (C++)</h3>
+        <p>Aplicație de tip consolă pentru gestionarea cărților.</p>
+        <p><strong>Tehnologii:</strong> C++, STL</p>
+        <p><a href="biblioteca.html">Vezi codul sursă</a></p>
+      </div>
 
-      <h3>Joc Python 2D</h3>
-      <p>Joc cu obstacole și scor folosind Pygame. <br/>
-      <strong>Tehnologii:</strong> Python, Pygame<br/>
-      <a href="Python_game.html">Vezi codul sursă</a></p>
+      <div class="project">
+        <h3>Joc Python 2D</h3>
+        <p>Joc cu obstacole și scor folosind Pygame.</p>
+        <p><strong>Tehnologii:</strong> Python, Pygame</p>
+        <p><a href="Python_game.html">Vezi codul sursă</a></p>
+      </div>
 
-      <h3>Aplicație bibliotecă (PowerApps)</h3>
-      <p>Aplicație low-code cu baze de date SharePoint. <br/>
-      <strong>Tehnologii:</strong> PowerApps, PowerAutomate<br/>
-      <a href="Powerapps.html">Capturi proiect</a></p>
+      <div class="project">
+        <h3>Aplicație bibliotecă (PowerApps)</h3>
+        <p>Aplicație low-code cu baze de date SharePoint.</p>
+        <p><strong>Tehnologii:</strong> PowerApps, PowerAutomate</p>
+        <p><a href="Powerapps.html">Capturi proiect</a></p>
+      </div>
 
-      <h3>Joc 3D (Unreal Engine)</h3>
-      <p>Harta 3D cu soldați, AI și arme. <br/>
-      <strong>Tehnologii:</strong> Unreal Engine 5, Blueprint, C++<br/>
-      <a href="UE5.html">Capturi proiect</a></p>
+      <div class="project">
+        <h3>Joc 3D (Unreal Engine)</h3>
+        <p>Hartă 3D cu soldați, AI și arme.</p>
+        <p><strong>Tehnologii:</strong> Unreal Engine 5, Blueprint, C++</p>
+        <p><a href="UE5.html">Capturi proiect</a></p>
+      </div>
 
-      <h3>Java Full Stack – Bibliotecă + Bancă + Server</h3>
-      <p>Aplicații dezvoltate integral în Java: bibliotecă, aplicație bancară și server (porturi + confirmări).</p>
-      <p>Tehnologii: Java, OOP, (Sockets), Eclipse</p>
-      <a href="java-fullstack.html">Detalii proiect</a>
+      <div class="project">
+        <h3>Java Full Stack – Bibliotecă + Bancă + Server</h3>
+        <p>Aplicații dezvoltate integral în Java: bibliotecă, aplicație bancară și server (porturi + confirmări).</p>
+        <p><strong>Tehnologii:</strong> Java, OOP, Sockets, Eclipse</p>
+        <p><a href="java-fullstack.html">Detalii proiect</a></p>
+      </div>
 
     </section>
 
     <section id="contact">
       <h2>Contact</h2>
-      <p>Email: 
-        <a href="https://mail.google.com/mail/?view=cm&to=raducanu.alexandru2005@gmail.com" target="_blank">
+      <p>Email:
+        <a href="https://mail.google.com/mail/?view=cm&to=raducanu.alexandru2005@gmail.com" target="_blank" rel="noopener">
           raducanu.alexandru2005@gmail.com
         </a>
       </p>
@@ -97,4 +122,3 @@
   </footer>
 </body>
 </html>
-
