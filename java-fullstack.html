@@ -2,8 +2,8 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raducanu Alexandru - Portofoliu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Java Full Stack – Bibliotecă + Bancă + Server</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
     header {
       background: #2c3e50;
       color: white;
-      padding: 2.2rem 1.2rem;
+      padding: 1.6rem 1.2rem;
       text-align: center;
     }
     main {
@@ -24,26 +24,23 @@
       max-width: 900px;
       margin: 0 auto;
     }
-    section { margin-bottom: 2rem; }
-
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 0.8rem;
-    }
-
-    /* “Card” pentru fiecare proiect */
-    .project {
+    h2, h3, h4 { color: #2c3e50; }
+    .card {
       background: white;
       border-radius: 10px;
-      padding: 1rem 1.2rem;
-      margin: 0.9rem 0;
+      padding: 1.2rem;
+      margin: 1rem 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    .project h3 {
-      margin: 0 0 0.4rem 0;
-      color: #2c3e50;
+    ul { margin: 0.5rem 0 0 1.2rem; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
-    .project p { margin: 0.2rem 0; }
 
     a {
       color: #2980b9;
@@ -52,73 +49,119 @@
     }
     a:hover { text-decoration: underline; }
 
+    .btn {
+      display: inline-block;
+      background: #2c3e50;
+      color: white;
+      padding: 0.55rem 0.9rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .btn:hover { opacity: 0.92; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.7rem;
+      margin-top: 0.8rem;
+    }
+    .gallery img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+    }
+
     footer {
       background: #2c3e50;
       color: white;
       text-align: center;
       padding: 1rem;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Raducanu Alexandru</h1>
-    <p>Student UTCB - Automatică și Informatică Aplicată</p>
-  </header>
 
-  <main>
-    <section id="proiecte">
-      <h2>Proiecte</h2>
+<header>
+  <h1>Java Full Stack</h1>
+  <p>Bibliotecă • Aplicație Bancară • Server (Sockets 5000/5001)</p>
+</header>
 
-      <div class="project">
-        <h3>Sistem de bibliotecă (C++)</h3>
-        <p>Aplicație de tip consolă pentru gestionarea cărților.</p>
-        <p><strong>Tehnologii:</strong> C++, STL</p>
-        <p><a href="biblioteca.html">Vezi codul sursă</a></p>
-      </div>
+<main>
+  <div class="topbar">
+    <a class="btn" href="index.html">← Înapoi la Home</a>
+    <span style="opacity:.85;">JavaFX • fișiere • sockets</span>
+  </div>
 
-      <div class="project">
-        <h3>Joc Python 2D</h3>
-        <p>Joc cu obstacole și scor folosind Pygame.</p>
-        <p><strong>Tehnologii:</strong> Python, Pygame</p>
-        <p><a href="Python_game.html">Vezi codul sursă</a></p>
-      </div>
+  <section class="card">
+    <h2>Descriere</h2>
+    <p>
+      Set de aplicații dezvoltate <strong>100% de la zero</strong> în <strong>Java (Eclipse)</strong>,
+      cu interfață <strong>JavaFX</strong>, stocare în <strong>fișiere</strong> și comunicare
+      client–server prin <strong>sockets</strong> pe porturile <strong>5000</strong> și <strong>5001</strong>.
+    </p>
+  </section>
 
-      <div class="project">
-        <h3>Aplicație bibliotecă (PowerApps)</h3>
-        <p>Aplicație low-code cu baze de date SharePoint.</p>
-        <p><strong>Tehnologii:</strong> PowerApps, PowerAutomate</p>
-        <p><a href="Powerapps.html">Capturi proiect</a></p>
-      </div>
+  <section class="card">
+    <h3>1) Aplicație Bibliotecă</h3>
+    <ul>
+      <li>JavaFX UI + validare input</li>
+      <li>Gestionare cărți / utilizatori (CRUD)</li>
+      <li>Căutare / filtrare</li>
+      <li>Persistență în fișiere locale</li>
+    </ul>
 
-      <div class="project">
-        <h3>Joc 3D (Unreal Engine)</h3>
-        <p>Hartă 3D cu soldați, AI și arme.</p>
-        <p><strong>Tehnologii:</strong> Unreal Engine 5, Blueprint, C++</p>
-        <p><a href="UE5.html">Capturi proiect</a></p>
-      </div>
+    <h4>Imagini aplicație (adaugă tu pozele)</h4>
+    <div class="gallery">
+      <img src="img/biblioteca1.png" alt="Bibliotecă - ecran 1">
+      <img src="img/biblioteca2.png" alt="Bibliotecă - ecran 2">
+      <img src="img/biblioteca3.png" alt="Bibliotecă - ecran 3">
+      <img src="img/biblioteca4.png" alt="Bibliotecă - ecran 4">
+      <img src="img/biblioteca5.png" alt="Bibliotecă - ecran 5">
+    </div>
+  </section>
 
-      <div class="project">
-        <h3>Java Full Stack – Bibliotecă + Bancă + Server</h3>
-        <p>Aplicații dezvoltate integral în Java: bibliotecă, aplicație bancară și server (porturi + confirmări).</p>
-        <p><strong>Tehnologii:</strong> Java, OOP, Sockets, Eclipse</p>
-        <p><a href="java-fullstack.html">Detalii proiect</a></p>
-      </div>
+  <section class="card">
+    <h3>2) Aplicație Bancară</h3>
+    <ul>
+      <li>JavaFX UI + validări operațiuni</li>
+      <li>Conturi, tranzacții, istoric</li>
+      <li>Verificare sold / reguli de business</li>
+      <li>Stocare în fișiere</li>
+    </ul>
 
-    </section>
+    <h4>Imagini aplicație (adaugă tu pozele)</h4>
+    <div class="gallery">
+      <img src="img/banca1.png" alt="Bancă - ecran 1">
+      <img src="img/banca2.png" alt="Bancă - ecran 2">
+      <img src="img/banca3.png" alt="Bancă - ecran 3">
+      <img src="img/banca4.png" alt="Bancă - ecran 4">
+      <img src="img/banca5.png" alt="Bancă - ecran 5">
+    </div>
+  </section>
 
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>Email:
-        <a href="https://mail.google.com/mail/?view=cm&to=raducanu.alexandru2005@gmail.com" target="_blank" rel="noopener">
-          raducanu.alexandru2005@gmail.com
-        </a>
-      </p>
-    </section>
-  </main>
+  <section class="card">
+    <h3>3) Server</h3>
+    <ul>
+      <li>Server Java cu sockets pe porturile <strong>5000</strong> și <strong>5001</strong></li>
+      <li>Mecanism de confirmare (ACK) pentru mesaje</li>
+      <li>Gestionarea conexiunilor + tratare erori</li>
+    </ul>
+  </section>
 
-  <footer>
-    <p>&copy; 2025 Raducanu Alexandru</p>
-  </footer>
+  <section class="card">
+    <h3>Tehnologii</h3>
+    <p>Java • JavaFX • OOP • File I/O • Sockets • Eclipse • Debugging & Testing</p>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 Raducanu Alexandru</p>
+</footer>
+
 </body>
 </html>
